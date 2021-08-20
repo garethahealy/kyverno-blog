@@ -1,0 +1,10 @@
+Kyverno
+kubectl
+kustomize
+yq
+jq
+Jenkinsfile
+Dockerfile
+toolset
+helloworld
+namespace

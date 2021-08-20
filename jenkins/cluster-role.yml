@@ -1,0 +1,31 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: kyverno
+  name: kyverno:get-policies
+rules:
+  - apiGroups:
+      - kyverno.io
+    resources:
+      - policies
+      - clusterpolicies
+    verbs:
+      - get
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: kyverno
+  name: kyverno:get-policies
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kyverno:get-policies
+subjects:
+  - kind: ServiceAccount
+    name: jenkins
+    namespace: jenkins

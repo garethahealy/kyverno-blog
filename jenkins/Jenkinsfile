@@ -1,0 +1,11 @@
+node ("jenkins-agent-kyverno") {
+    stage("Clone blog") {
+        sh "git clone https://github.com/garethahealy/kyverno-blog.git"
+    }
+
+    stage("Run kyverno") {
+        dir("kyverno-blog") {
+            sh "bats test/kyverno-apply.sh"
+        }
+    }
+}

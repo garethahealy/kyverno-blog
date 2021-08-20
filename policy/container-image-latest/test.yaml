@@ -1,0 +1,10 @@
+name: container-image-latest-fails
+policies:
+  - src.yaml
+resources:
+  - test_data/unit/list.yml
+results:
+  - policy: container-image-latest
+    rule: validate-resources
+    resource: imageuseslatesttag
+    status: fail

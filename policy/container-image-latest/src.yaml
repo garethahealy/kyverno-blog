@@ -1,0 +1,30 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: container-image-latest
+  annotations:
+    policies.kyverno.io/owner: Red Hat CoP
+    policies.kyverno.io/category: Workload Management
+    policies.kyverno.io/description: Check a Deployment is not using the latest tag for their image
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: validate-resources
+    match:
+      resources:
+        kinds:
+          - Deployment
+    # BUG: https://github.com/kyverno/kyverno/issues/2299
+    #  any:
+    #  - resources:
+    #      kinds:
+    #      - Deployment
+    validate:
+      message: "{{request.object.kind}}/{{request.object.metadata.name}}: one of its containers is using the latest tag for its image, which is an anti-pattern."
+      pattern:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: "*"
+                image: "!*:latest"
