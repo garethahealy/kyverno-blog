@@ -1,0 +1,37 @@
+node ("jenkins-agent-kyverno") {
+    stage("Clone blog") {
+        sh "git clone https://github.com/garethahealy/kyverno-validate-blog.git"
+    }
+
+    stage("Deploy policies") {
+        dir("kyverno-validate-blog") {
+            sh "oc delete clusterpolicy --all"
+            sh "test/deploy-kyverno.sh deploy_policy"
+        }
+    }
+
+    stage("Run kyverno unit tests for policy") {
+        dir("kyverno-validate-blog") {
+            sh "bats test/kyverno-unittests.sh"
+        }
+    }
+
+    stage("Run kyverno apply against cluster") {
+        dir("kyverno-validate-blog") {
+            //Make sure no policies exist, or we wont be able to create the resource
+            sh "oc delete clusterpolicy/container-image-latest"
+            sh "oc create -f policy/container-image-latest/test_data/unit/list.yml"
+
+            //Lets just wait to make sure the test data is created
+            sh "sleep 5s"
+            sh "kyverno apply policy/container-image-latest/src.yaml --cluster --policy-report --namespace jenkins"
+            sh "oc delete -f policy/container-image-latest/test_data/unit/list.yml"
+        }
+    }
+
+    stage("Re-deploy policies") {
+        dir("kyverno-validate-blog") {
+            sh "test/deploy-kyverno.sh deploy_policy"
+        }
+    }
+}

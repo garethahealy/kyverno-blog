@@ -1,0 +1,11 @@
+node ("jenkins-agent-kyverno") {
+    stage("Clone blog") {
+        sh "git clone https://github.com/garethahealy/kyverno-validate-blog.git"
+    }
+
+    stage("Deploy resources") {
+        dir("kyverno-validate-blog") {
+            sh "oc create -f policy/container-image-latest/test_data/unit/list.yml --dry-run=server"
+        }
+    }
+}
