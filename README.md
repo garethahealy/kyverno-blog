@@ -231,4 +231,4 @@ and negatives.
   is possible.
 
 ## <a name="DISCLAIMER"></a>DISCLAIMER
-[1] Kyverno is an open-source project. It is not a Red Hat sponsored nor is it supported under a Red Hat subscription.
+[1] Kyverno is an open-source project. It is not sponsored by Red Hat nor is it supported under a Red Hat subscription.
