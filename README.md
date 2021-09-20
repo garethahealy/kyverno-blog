@@ -184,8 +184,8 @@ The following example presumes you are using a Jenkins deployed onto your cluste
 
 ```bash
 oc new-project jenkins
-oc process jenkins-persistent -p DISABLE_ADMINISTRATIVE_MONITORS=true -p MEMORY_LIMIT=2Gi -n openshift | oc create -f -
-oc rollout status dc/jenkins --watch=true
+oc process jenkins-persistent -p DISABLE_ADMINISTRATIVE_MONITORS=true -p MEMORY_LIMIT=2Gi -n openshift | oc create -n jenkins -f -
+oc rollout status dc/jenkins --watch=true -n jenkins
 ```
 
 If you are using another CI/CD tool, the key point is that we want to execute `kyverno` before deploying to the cluster.
@@ -194,9 +194,9 @@ To be able to execute that bash script, you will need to replicate the same func
 Firstly, we need to build a Jenkins agent which can execute `BATS` and `kyverno` in our Jenkins project.
 
 ```bash
-oc import-image quay.io/redhat-cop/jenkins-agent-python:v1.0 --confirm
-oc create -f jenkins/KyvernoBuildConfig.yaml
-oc start-build kyverno-docker-build -w
+oc import-image quay.io/redhat-cop/jenkins-agent-python:v1.0 --confirm -n jenkins
+oc create -f jenkins/KyvernoBuildConfig.yaml -n jenkins
+oc start-build kyverno-docker-build -n jenkins -w
 ```
 
 Once the build is complete, let's allow the `jenkins` service account to create Kyverno policies:
