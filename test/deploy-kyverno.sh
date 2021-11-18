@@ -25,8 +25,7 @@ deploy_kyverno() {
   helm repo add kyverno https://kyverno.github.io/kyverno
   helm repo update
 
-  helm install kyverno-crds kyverno/kyverno-crds --namespace kyverno --create-namespace
-  helm install kyverno kyverno/kyverno --namespace kyverno --set=replicaCount=3,podSecurityStandard=custom,config.resourceFilters="$resourceFilters"
+  helm install kyverno kyverno/kyverno --namespace kyverno --create-namespace --set=replicaCount=3,podSecurityStandard=custom,config.resourceFilters="$resourceFilters"
 
   echo ""
   echo "Waiting for kyverno to be ready..."
